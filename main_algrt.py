@@ -136,6 +136,7 @@ driver_options.add_argument("--headless")
 answer_widgets = []
 
 master = tk.Tk()
+master.iconbitmap(resource_path('Icon.ico'))
 master.title("Парсер Фотографий товара из WB")
 master.geometry('717x400+100+50')
 master.resizable(False, False)
