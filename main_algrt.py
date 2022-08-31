@@ -64,7 +64,7 @@ tk.Button(master, width=9, text='Выход', command=master.destroy).grid(row=1
 
 loading_gif_label = ImageLabel(master)
 loading_gif_label.grid(row=4, column=0)
-loading_gif_label.load('loading.gif')
+loading_gif_label.load(resource_path('loading.gif'))
 loading_gif_label.grid_remove()
 
 master.mainloop()
