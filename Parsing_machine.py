@@ -92,6 +92,8 @@ class ParseMachine:
             loading_GIF_widget.grid_remove()
             main_search_bt['state'] = tk.NORMAL
 
+            self.close_driver()
+
         except Exception as d:
             answer_widgets.append(tk.Text(parent_window, height=17, width=70))
             answer_widgets[-1].grid(row=6, column=0)
@@ -99,6 +101,8 @@ class ParseMachine:
 
             loading_GIF_widget.grid_remove()
             main_search_bt['state'] = tk.NORMAL
+
+            self.close_driver()
 
     def close_driver(self):
         self.driver.close()
