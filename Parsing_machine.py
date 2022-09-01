@@ -22,7 +22,7 @@ def copy_to_buffer(arguments):
     """
 
     answer_widgets, widget_id = arguments
-    pyperclip.copy(answer_widgets[widget_id].get("1.0", "end-1c"))
+    pyperclip.copy(answer_widgets[widget_id].winfo_children()[0].get("1.0", "end-1c"))
 
 
 def resource_path(relative_path):
@@ -43,7 +43,7 @@ class ParseMachine:
         self.driver = webdriver.Chrome(executable_path=resource_path("chromedriver.exe"),
                                        options=driver_options)
 
-    def search_imgs(self, link_to_search: str, answer_widgets: list, parent_window, loading_GIF_widget, main_search_bt):
+    def search_imgs(self, link_to_search: str, answer_widgets: list, answers_frame, loading_GIF_widget, main_search_bt):
         """
         Функция Парсинга страницы WB.
         1) Поиск и загрузка страницы.
@@ -53,7 +53,7 @@ class ParseMachine:
         """
 
         main_search_bt['state'] = tk.DISABLED
-        loading_GIF_widget.grid(row=3, column=0)
+        loading_GIF_widget.pack(padx=250, pady=100)
 
         try:
 
@@ -74,32 +74,33 @@ class ParseMachine:
                 row_id = 6
                 for link in imgs_links:  # Вывод найденных ответов в окно приложения.
                     row_id += 1
-                    answer_widgets.append(tk.Text(parent_window, height=1, width=70))
-                    text_widget_id = len(answer_widgets)-1
-                    answer_widgets.append(tk.Button(parent_window, height=1, width=9, text="Копировать",
-                                                    command=partial(copy_to_buffer, (answer_widgets, text_widget_id))))
-
-                    answer_widgets[-1].grid(row=row_id, column=1)
-                    answer_widgets[-2].grid(row=row_id, column=0)
-                    answer_widgets[-2].bind("<Control-KeyPress>", keys)
-                    answer_widgets[-2].insert('1.0', link)
+                    answer_widgets.append(tk.Frame(answers_frame, bg='white'))
+                    text_widget_id = len(answer_widgets) - 1
+                    widgets = (tk.Text(answer_widgets[-1], height=1, width=70),
+                               tk.Button(answer_widgets[-1], height=1, width=9, text="Копировать",
+                                         command=partial(copy_to_buffer, (answer_widgets, text_widget_id))))
+                    widgets[0].bind("<Control-KeyPress>", keys)
+                    widgets[0].insert('1.0', link)
+                    widgets[0].pack(side=tk.LEFT, padx=10, pady=3)
+                    widgets[1].pack(side=tk.LEFT, padx=10, pady=3)
+                    answer_widgets[-1].pack(side=tk.TOP, anchor=tk.W)
 
             else:
-                answer_widgets.append(tk.Text(parent_window, height=1, width=70))
-                answer_widgets[-1].grid(row=6, column=0)
+                answer_widgets.append(tk.Text(answers_frame))
+                answer_widgets[-1].pack()
                 answer_widgets[-1].insert('1.0', "Ничего не найдено!")
 
-            loading_GIF_widget.grid_remove()
+            loading_GIF_widget.pack_forget()
             main_search_bt['state'] = tk.NORMAL
 
             self.close_driver()
 
         except Exception as d:
-            answer_widgets.append(tk.Text(parent_window, height=17, width=70))
-            answer_widgets[-1].grid(row=6, column=0)
+            answer_widgets.append(tk.Text(answers_frame))
+            answer_widgets[-1].pack()
             answer_widgets[-1].insert('1.0', str("ОШИБКА!!!\n" + str(d) + "ОШИБКА!!!"))
 
-            loading_GIF_widget.grid_remove()
+            loading_GIF_widget.pack_forget()
             main_search_bt['state'] = tk.NORMAL
 
             self.close_driver()
