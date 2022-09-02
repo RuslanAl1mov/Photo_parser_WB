@@ -1,10 +1,10 @@
 import tkinter as tk
 from tkinter import END
+from tkinter import filedialog
 
 from GIF_Animation_CLASS import ImageLabel
 from Parsing_machine import ParseMachine
 from options import keys
-
 
 import os
 import sys
@@ -53,7 +53,29 @@ master.resizable(False, False)
 
 
 tk.Label(master, height=2, text="Парсер WILDBERRIES", bg='purple', fg='white', font=("Arial", 15)).pack(anchor=tk.NW, padx=8, fill=tk.X)
-tk.Label(master, height=2, text="Ссылка на страницу товара WB:").pack(anchor=tk.NW, padx=8)
+
+
+def browse_button():
+    # Allow user to select a directory and store it in global var
+    # called folder_path
+    global folder_path
+    filename = filedialog.askdirectory()
+    folder_path.set(filename)
+    print(filename)
+
+
+tk.Label(master, height=1, text="Папка для сохранения фотографий:").pack(anchor=tk.NW, padx=8)
+
+folder_browser_frame = tk.Frame(master)
+folder_path = tk.StringVar()
+folder_path_label = tk.Label(folder_browser_frame, width=86, height=1, textvariable=folder_path, justify=tk.LEFT,
+                             bg='white', borderwidth=1, relief=tk.SUNKEN)
+folder_path_label.pack(side=tk.LEFT, padx=7)
+button2 = tk.Button(folder_browser_frame, text="Выбрать ...", width=9, command=browse_button)
+button2.pack(side=tk.LEFT)
+folder_browser_frame.pack(anchor=tk.W, padx=5)
+
+tk.Label(master, height=1, text="Ссылка на страницу товара WB:").pack(anchor=tk.NW, padx=8)
 
 
 f_search = tk.Frame(master)
@@ -81,7 +103,6 @@ loading_gif_label = ImageLabel(answers_frame, bg='white')
 loading_gif_label.pack()
 loading_gif_label.load(resource_path('loading.gif'))
 loading_gif_label.pack_forget()
-
 
 open_in_folder_btn = tk.Button(master, width=20, text='Открыть в папке', command=None)
 open_in_folder_btn['state'] = tk.DISABLED
