@@ -51,6 +51,8 @@ master.title("Парсер Фотографий товара из WB")
 master.geometry('717x600+100+50')
 master.resizable(False, False)
 
+
+tk.Label(master, height=2, text="Парсер WILDBERRIES", bg='purple', fg='white', font=("Arial", 15)).pack(anchor=tk.NW, padx=8, fill=tk.X)
 tk.Label(master, height=2, text="Ссылка на страницу товара WB:").pack(anchor=tk.NW, padx=8)
 
 
