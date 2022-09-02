@@ -83,7 +83,9 @@ loading_gif_label.load(resource_path('loading.gif'))
 loading_gif_label.pack_forget()
 
 
-tk.Button(master, width=20, text='Открыть в папке', command=None).pack(side=tk.LEFT, anchor=tk.SW, padx=15, pady=12)
+open_in_folder_btn = tk.Button(master, width=20, text='Открыть в папке', command=None)
+open_in_folder_btn['state'] = tk.DISABLED
+open_in_folder_btn.pack(side=tk.LEFT, anchor=tk.SW, padx=15, pady=12)
 tk.Button(master, width=9, text='Выход', command=master.destroy).pack(side=tk.RIGHT, anchor=tk.SE, padx=15, pady=12)
 
 
