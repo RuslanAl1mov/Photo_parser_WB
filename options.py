@@ -1,4 +1,6 @@
 import ctypes
+import sys
+import os
 
 
 def is_ru_lang_keyboard(a):
@@ -31,3 +33,17 @@ def keys(event):
             event.widget.event_generate("<<Clear>>")
         elif event.keycode == 65:
             event.widget.event_generate("<<SelectAll>>")
+
+
+def resource_path(relative_path):
+    """
+    Get absolute path to resource, works for dev and for PyInstaller
+    Функция для получения абсолютного пути к файлам, необходима при работе с Dev и PyInstaller
+    """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
