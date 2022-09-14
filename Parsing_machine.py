@@ -11,11 +11,12 @@ import tkinter as tk
 import httplib2
 
 import time
+import os
 
 
 def copy_to_buffer(arguments):
     """
-    Функция копирования найденной ссылки в Будфер обмена для последующего поиска ссылки в Браузере.
+    Функция копирования найденной ссылки в Буфер обмена для последующего поиска ссылки в Браузере.
     :param arguments: Кортеж виджетов.
     :return:
     """
@@ -32,7 +33,7 @@ class ParseMachine:
                                        options=driver_options)
 
     def search_imgs(self, link_to_search: str, answer_widgets: list, folder_path_to_download_img: str, answers_frame,
-                    loading_GIF_widget, main_search_bt):
+                    loading_GIF_widget, main_search_bt, copy_loaded_imgs_btn):
         """
         Функция Парсинга страницы WB.
         1) Поиск и загрузка страницы.
@@ -43,6 +44,7 @@ class ParseMachine:
         """
 
         main_search_bt['state'] = tk.DISABLED
+        copy_loaded_imgs_btn['state'] = tk.DISABLED
         loading_GIF_widget.pack(padx=250, pady=100)
 
         try:
@@ -63,6 +65,10 @@ class ParseMachine:
                         if folder_path_to_download_img != '':
                             threading.Thread(target=self.download_image, name='download_img',
                                              args=(img_link, len(imgs_links), folder_path_to_download_img)).start()
+
+            if folder_path_to_download_img != '':
+                threading.Thread(target=self.activate_copy_images_btn, args=(folder_path_to_download_img,
+                                                                             copy_loaded_imgs_btn)).start()
 
             if len(imgs_links) != 0:
                 row_id = 6
@@ -110,9 +116,33 @@ class ParseMachine:
 
         h = httplib2.Http('.cache')
         response, content = h.request(link)
-        out = open(f'{download_path}/img {image_number}.jpg', 'wb')
+        out = open(f'{download_path}/wbimg {image_number}.jpg', 'wb')
         out.write(content)
         out.close()
+
+    def activate_copy_images_btn(self, folder_path: str, button_to_activate: tk.Button):
+        """
+        Функция проверки скачаны ли фотографии из страницы, если скачаны, активирует кнопку "Копировать сохраненные
+        картинки".
+        :param folder_path: путь к папке в которой сохраняются файлы для копирования.
+        :param button_to_activate: Кнопа, которую надо активировать после проверки условий.
+        :return:
+        """
+        time.sleep(3)
+        for i in range(7):
+            folder_path = folder_path.replace("\\", "/")
+            folder_list = os.listdir(folder_path)
+            number_of_loaded_images = 0
+            print(folder_list)
+            print(os.listdir('.cache'))
+            for file_name in folder_list:
+                if 'wbimg' in file_name and '.jpg' in file_name:
+                    number_of_loaded_images += 1
+            if len(os.listdir('.cache')) == number_of_loaded_images:
+                button_to_activate.config(command=partial(options.files_to_clipboard, folder_path),
+                                          state=tk.NORMAL)
+            else:
+                time.sleep(3)
 
     def close_driver(self):
         """
