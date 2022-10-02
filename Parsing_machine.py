@@ -114,7 +114,7 @@ class ParseMachine:
         :return:
         """
 
-        h = httplib2.Http('.cache')
+        h = httplib2.Http(options.resource_path('.cache'))
         response, content = h.request(link)
         out = open(f'{download_path}/wbimg {image_number}.jpg', 'wb')
         out.write(content)
@@ -133,12 +133,10 @@ class ParseMachine:
             folder_path = folder_path.replace("\\", "/")
             folder_list = os.listdir(folder_path)
             number_of_loaded_images = 0
-            print(folder_list)
-            print(os.listdir('.cache'))
             for file_name in folder_list:
                 if 'wbimg' in file_name and '.jpg' in file_name:
                     number_of_loaded_images += 1
-            if len(os.listdir('.cache')) == number_of_loaded_images:
+            if len(os.listdir(options.resource_path('.cache'))) == number_of_loaded_images:
                 button_to_activate.config(command=partial(options.files_to_clipboard, folder_path),
                                           state=tk.NORMAL)
             else:

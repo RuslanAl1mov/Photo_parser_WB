@@ -107,7 +107,8 @@ class MainWindow(tk.Tk):
 
             # Поток 1.
             try:
-                cache_cleaner_thread = threading.Thread(target=options.clear_cache_folder, args=('.cache',))
+                cache_cleaner_thread = threading.Thread(target=options.clear_cache_folder,
+                                                        args=(options.resource_path('.cache'),))
                 cache_cleaner_thread.start()
             except Exception as e:
                 print(repr(e))
