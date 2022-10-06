@@ -3,6 +3,8 @@ import sys
 import os
 from ctypes import wintypes
 import win32clipboard
+import win32gui
+import win32con
 
 import pythoncom
 
@@ -126,3 +128,26 @@ def files_to_clipboard(files_path: str):
         win32clipboard.SetClipboardData(win32clipboard.CF_HDROP, stg.data)
     finally:
         win32clipboard.CloseClipboard()
+
+
+def hide_window_by_name(window_name: str):
+
+    """
+    Функция для закрытия (СКРЫТИЯ) ненужных окон. Функция выводит все имеющиеся
+    окна и выбирает окно с определённым названием.
+    :param window_name: Названия окна которое необходимо скрыть.
+    :return:
+    """
+
+    toplist = []
+    winlist = []
+
+    def enum_callback(hwnd, results):
+        winlist.append((hwnd, win32gui.GetWindowText(hwnd)))
+
+    win32gui.EnumWindows(enum_callback, toplist)
+
+    for window in winlist:
+        if window_name in window[1]:
+            win32gui.ShowWindow(window[0], win32con.SW_HIDE)
+
