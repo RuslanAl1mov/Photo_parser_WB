@@ -29,8 +29,12 @@ class ParseMachine:
     def __init__(self):
         driver_options = Options()
         driver_options.add_argument("--headless")
+        driver_options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        driver_options.add_argument('--log-level=3')
+
         self.driver = webdriver.Chrome(executable_path=options.resource_path("chromedriver.exe"),
                                        options=driver_options)
+        options.hide_window_by_name(window_name='chromedriver.exe')  # Закрытие консоли
 
     def search_imgs(self, link_to_search: str, answer_widgets: list, folder_path_to_download_img: str, answers_frame,
                     loading_GIF_widget, main_search_bt, copy_loaded_imgs_btn):
@@ -113,10 +117,10 @@ class ParseMachine:
         :param download_path: Ссылка на папку, куда скачивать фото/файл(выбирается пользователем).
         :return:
         """
-
         h = httplib2.Http(options.resource_path('.cache'))
-        response, content = h.request(link)
-        out = open(f'{download_path}/wbimg {image_number}.jpg', 'wb')
+        (response, content) = h.request(link)
+        download_path = download_path.replace("/", "\\")
+        out = open(f'{download_path}\\wbimg_{image_number}.jpg', 'wb')
         out.write(content)
         out.close()
 

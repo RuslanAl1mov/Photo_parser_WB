@@ -99,10 +99,10 @@ class MainWindow(tk.Tk):
         - Очистка строки ввода ссылки страницы для парсинга.
         :return:
         """
-        self.remove_last_answers()
 
         last_link = self.wb_link_entry.get("1.0", "end-1c")
         if last_link != '':
+            self.remove_last_answers()
             self.last_link_label.config(text="Поиск по ссылке: " + last_link)
 
             # Поток 1.
@@ -114,12 +114,13 @@ class MainWindow(tk.Tk):
                 print(repr(e))
 
             # Поток 2.
-            try:
-                last_dwnld_imgs_cleaner_thread = threading.Thread(target=options.clear_last_images,
-                                                                  args=(self.user_folder_path,))
-                last_dwnld_imgs_cleaner_thread.start()
-            except Exception as e:
-                print(repr(e))
+            if self.user_folder_path != '':
+                try:
+                    last_dwnld_imgs_cleaner_thread = threading.Thread(target=options.clear_last_images,
+                                                                      args=(self.user_folder_path,))
+                    last_dwnld_imgs_cleaner_thread.start()
+                except Exception as e:
+                    print(repr(e))
 
             # Поток 3.
             try:
